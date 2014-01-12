@@ -1,0 +1,15 @@
+#! /bin/bash
+
+DISTROOT=dist
+BUILDROOT=build
+
+git submodule init
+git submodule update
+
+mkdir -p $DISTROOT/
+xcodebuild build -target proj | egrep "^(===|\*\*)"
+xcodebuild build -target proj -sdk iphonesimulator | egrep "^(===|\*\*)"
+lipo -o $DISTROOT/libproj.a -create $BUILDROOT/Release-iphoneos/libproj.a build/Release-iphonesimulator/libproj.a
+cp src/proj_api.h dist/libproj.h
+
+echo Static Library stored in dist/
